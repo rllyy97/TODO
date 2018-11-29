@@ -29,8 +29,10 @@
         android:layout_marginTop="3dp"
         android:layout_weight="1"
         android:background="@color/transparent"
+        android:hint="New Task"
         android:inputType="textCapSentences|textMultiLine"
         android:textColor="@color/darkMain"
+        android:textColorHint="#aaa"
         android:textSize="24sp"
         android:textStyle="bold" />
 

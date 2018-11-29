@@ -11,6 +11,14 @@ import android.widget.*
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.R.animator
+import android.animation.AnimatorInflater
+
+
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -47,6 +55,11 @@ class MainActivity : AppCompatActivity() {
         // Init new task button
         newTaskButton = findViewById(R.id.newTaskButton)
         newTaskButton.setOnClickListener {
+            it.alpha = 0.0F
+            val animator = AnimatorInflater.loadAnimator(applicationContext, R.animator.fade_in)
+            animator.setTarget(it)
+            animator.duration = 800
+            animator.start()
             rootView.requestFocus()
             tasks.add(Task(false,""))
             updateView()
