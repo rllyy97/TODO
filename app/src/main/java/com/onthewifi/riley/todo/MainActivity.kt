@@ -15,10 +15,19 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.R.animator
 import android.animation.AnimatorInflater
-
-
-
-
+import android.app.Activity
+import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.IBinder
+import android.support.v4.content.ContextCompat
+import android.view.MotionEvent
+import android.view.View.OnTouchListener
+import android.view.Gravity
+import android.widget.PopupWindow
+import android.widget.LinearLayout
+import android.view.LayoutInflater
+import android.view.View
+import kotlinx.android.synthetic.main.task_view.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -75,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         clearButton = findViewById(R.id.clearButton)
         clearButton.setOnClickListener {
             tasks.clear()
+            hideKeyboard()
             updateView()
         }
 
@@ -84,6 +94,7 @@ class MainActivity : AppCompatActivity() {
         writeTasks()
         runOnUiThread { (tasksRecyclerView.adapter as RecyclerAdapter).notifyDataSetChanged() }
         counterText.text = tasks.count().toString()
+        if (tasks.count() == 0) thumbPopup()
     }
 
     fun writeTasks() {
@@ -98,7 +109,26 @@ class MainActivity : AppCompatActivity() {
         objectInputStream.close()
     }
 
+    fun thumbPopup() {
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val popupView = inflater.inflate(R.layout.all_done_popup, null)
+
+        val width = LinearLayout.LayoutParams.WRAP_CONTENT
+        val height = LinearLayout.LayoutParams.WRAP_CONTENT
+        val focusable = true // lets taps outside the popup also dismiss it
+        val popupWindow = PopupWindow(popupView, width, height, focusable)
+        popupWindow.animationStyle = R.style.popup_window_animation
+        popupWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0)
+        Handler().postDelayed({ popupWindow.dismiss() }, 1000)
+
+    }
+
     fun toast(string: String) = Toast.makeText(this, string, Toast.LENGTH_LONG).show()
+    fun hideKeyboard() {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(currentFocus.windowToken, 0)
+    }
+
     override fun onBackPressed() { super.onBackPressed(); rootView.requestFocus() }
 
 }
