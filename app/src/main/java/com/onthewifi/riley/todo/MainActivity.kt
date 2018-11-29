@@ -2,12 +2,12 @@ package com.onthewifi.riley.todo
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -15,6 +15,7 @@ import java.io.ObjectOutputStream
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var rootView: NestedScrollView
     private lateinit var tasksRecyclerView: RecyclerView
     private lateinit var counterText: TextView
     private lateinit var newTaskButton: Button
@@ -30,6 +31,10 @@ class MainActivity : AppCompatActivity() {
         // Load tasks from File
         readTasks()
 
+        // Init Root
+        rootView = findViewById(R.id.root)
+        rootView.setOnClickListener { it.requestFocus() }
+
         // Set up recyclerView
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView)
         tasksRecyclerView.layoutManager = LinearLayoutManager(this as Context)
@@ -42,12 +47,15 @@ class MainActivity : AppCompatActivity() {
         // Init new task button
         newTaskButton = findViewById(R.id.newTaskButton)
         newTaskButton.setOnClickListener {
+            rootView.requestFocus()
             tasks.add(Task(false,""))
             updateView()
-            var view = (tasksRecyclerView.layoutManager as LinearLayoutManager).findViewByPosition(tasks.size-1)
-//            var newTaskText = view!!.bodyText
-//            newTaskText!!.requestFocus()
-//            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(newTaskText, InputMethodManager.SHOW_IMPLICIT)
+            tasksRecyclerView.post {
+                val view = (tasksRecyclerView.layoutManager as LinearLayoutManager).findViewByPosition(tasksRecyclerView.adapter!!.itemCount-1)
+                val newTaskText = view!!.findViewById<EditText>(R.id.bodyText)
+                newTaskText!!.requestFocus()
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(newTaskText, InputMethodManager.SHOW_IMPLICIT)
+            }
         }
 
         // Clear functionality
@@ -76,4 +84,8 @@ class MainActivity : AppCompatActivity() {
         tasks = objectInputStream.readObject() as ArrayList<Task>
         objectInputStream.close()
     }
+
+    fun toast(string: String) = Toast.makeText(this, string, Toast.LENGTH_LONG).show()
+    override fun onBackPressed() { super.onBackPressed(); rootView.requestFocus() }
+
 }

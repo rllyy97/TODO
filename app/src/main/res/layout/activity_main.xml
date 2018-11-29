@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:paddingBottom="16dp">
+            android:paddingBottom="32dp">
 
             <CheckBox
                 android:id="@+id/newTaskMark"
@@ -98,13 +98,14 @@
                 android:id="@+id/newTaskButton"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
+                android:layout_marginTop="3dp"
                 android:layout_weight="0"
                 android:background="@color/transparent"
                 android:fontFamily="sans-serif"
                 android:text="New Task"
                 android:textAlignment="viewStart"
                 android:textAllCaps="false"
-                android:textColor="#999"
+                android:textColor="#aaa"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
