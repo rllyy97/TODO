@@ -14,12 +14,16 @@ import java.io.ObjectOutputStream
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.R.animator
+import android.animation.Animator
 import android.animation.AnimatorInflater
+import android.animation.ObjectAnimator
 import android.app.Activity
+import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.IBinder
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
 import android.view.Gravity
@@ -27,6 +31,7 @@ import android.widget.PopupWindow
 import android.widget.LinearLayout
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.task_view.*
 
 
@@ -57,6 +62,16 @@ class MainActivity : AppCompatActivity() {
         tasksRecyclerView.layoutManager = LinearLayoutManager(this as Context)
         tasksRecyclerView.adapter = RecyclerAdapter(this as Context, tasks)
 
+        // Swipe to delete
+        val swipeHandler = object : SwipeToDeleteCallback(applicationContext) {
+            override fun onSwiped(view: RecyclerView.ViewHolder, pos: Int) {
+                (tasksRecyclerView.adapter as RecyclerAdapter).removeAt(view.adapterPosition)
+                updateView()
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(tasksRecyclerView)
+
         // Enable counter
         counterText = findViewById(R.id.counterText)
         counterText.text = tasks.count().toString()
@@ -79,6 +94,11 @@ class MainActivity : AppCompatActivity() {
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(newTaskText, InputMethodManager.SHOW_IMPLICIT)
             }
         }
+//        newTaskButton.alpha = 0.0F
+//        tasksRecyclerView.postOnAnimation {
+//            newTaskButton.alpha = 1.0F
+//            newTaskButton.startAnimation(AnimationUtils.loadAnimation(applicationContext, R.anim.item_animation_fall_down))
+//        }
 
         // Clear functionality
         clearButton = findViewById(R.id.clearButton)
@@ -126,7 +146,7 @@ class MainActivity : AppCompatActivity() {
     fun toast(string: String) = Toast.makeText(this, string, Toast.LENGTH_LONG).show()
     fun hideKeyboard() {
         val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(currentFocus.windowToken, 0)
+        if (currentFocus != null) inputMethodManager.hideSoftInputFromWindow(currentFocus.windowToken, 0)
     }
 
     override fun onBackPressed() { super.onBackPressed(); rootView.requestFocus() }

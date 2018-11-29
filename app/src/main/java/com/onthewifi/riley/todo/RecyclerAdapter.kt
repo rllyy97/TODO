@@ -42,6 +42,12 @@ class RecyclerAdapter(private val context: Context, private val tasks: ArrayList
         })
     }
 
+    fun removeAt(position: Int) {
+        tasks.removeAt(position)
+        notifyItemRemoved(position)
+        mainActivity.writeTasks()
+    }
+
     override fun getItemCount() = tasks.size
     override fun getItemId(position: Int) = position.toLong()
 
