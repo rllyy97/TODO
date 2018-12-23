@@ -10,8 +10,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.text.Editable
 import android.text.TextWatcher
-
-
+import android.text.method.TextKeyListener.clear
+import android.view.KeyEvent
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.ImageButton
+import kotlinx.android.synthetic.main.activity_main.*
 
 class RecyclerAdapter(private val context: Context, private val tasks: ArrayList<Task>) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
@@ -25,6 +29,7 @@ class RecyclerAdapter(private val context: Context, private val tasks: ArrayList
         // Holds view for each task
         var markButton: CheckBox = taskView.findViewById(R.id.markButton)
         var bodyText: TextView = taskView.findViewById(R.id.bodyText)
+        var deleteButton: ImageButton = taskView.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,11 +45,12 @@ class RecyclerAdapter(private val context: Context, private val tasks: ArrayList
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) { tasks[view.adapterPosition].body = s.toString(); mainActivity.writeTasks() }
         })
+        view.deleteButton.setOnClickListener { removeAt(pos) }
     }
 
     fun removeAt(position: Int) {
         tasks.removeAt(position)
-        notifyItemRemoved(position)
+        mainActivity.updateView()
         mainActivity.writeTasks()
     }
 

@@ -24,6 +24,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
 import android.view.Gravity
@@ -62,15 +63,15 @@ class MainActivity : AppCompatActivity() {
         tasksRecyclerView.layoutManager = LinearLayoutManager(this as Context)
         tasksRecyclerView.adapter = RecyclerAdapter(this as Context, tasks)
 
-        // Swipe to delete
-        val swipeHandler = object : SwipeToDeleteCallback(applicationContext) {
-            override fun onSwiped(view: RecyclerView.ViewHolder, pos: Int) {
-                (tasksRecyclerView.adapter as RecyclerAdapter).removeAt(view.adapterPosition)
-                updateView()
-            }
-        }
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(tasksRecyclerView)
+//        // Swipe to delete
+//        val swipeHandler = object : SwipeToDeleteCallback(applicationContext) {
+//            override fun onSwiped(view: RecyclerView.ViewHolder, pos: Int) {
+//                (tasksRecyclerView.adapter as RecyclerAdapter).removeAt(view.layoutPosition)
+//                updateView()
+//            }
+//        }
+//        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+//        itemTouchHelper.attachToRecyclerView(tasksRecyclerView)
 
         // Enable counter
         counterText = findViewById(R.id.counterText)
@@ -115,6 +116,7 @@ class MainActivity : AppCompatActivity() {
         runOnUiThread { (tasksRecyclerView.adapter as RecyclerAdapter).notifyDataSetChanged() }
         counterText.text = tasks.count().toString()
         if (tasks.count() == 0) thumbPopup()
+        hideKeyboard()
     }
 
     fun writeTasks() {
@@ -144,6 +146,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun toast(string: String) = Toast.makeText(this, string, Toast.LENGTH_LONG).show()
+    fun log(string: String) = Log.e("ERROR: ", string)
     fun hideKeyboard() {
         val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         if (currentFocus != null) inputMethodManager.hideSoftInputFromWindow(currentFocus.windowToken, 0)

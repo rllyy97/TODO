@@ -6,6 +6,7 @@
     <color name="primaryDark">#c8b900</color>
     <color name="accentMain">#f44336</color>
     <color name="darkMain">#263238</color>
+    <color name="darkLight">#e0e0e0</color>
 
     <!--Utility Colors-->
     <color name="white">#fff</color>

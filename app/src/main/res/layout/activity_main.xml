@@ -7,9 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fadingEdge="vertical"
-    android:paddingLeft="16dp"
     android:paddingTop="16dp"
-    android:paddingRight="16dp"
     android:paddingBottom="8dp"
     android:requiresFadingEdge="vertical"
     tools:context=".MainActivity">
@@ -23,6 +21,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -41,7 +41,6 @@
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
-                android:background="@drawable/counter_background"
                 android:gravity="center"
                 android:text="#"
                 android:textColor="@color/darkMain"
@@ -52,7 +51,7 @@
                 android:id="@+id/clearButton"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/clear_background"
+                android:background="@color/transparent"
                 android:elevation="0dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_clear_all_black_24dp" />
@@ -67,7 +66,7 @@
             android:id="@+id/tasksRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layoutAnimation="@anim/layout_animation_fall_down" >
+            android:layoutAnimation="@anim/layout_animation_fall_down">
 
         </android.support.v7.widget.RecyclerView>
 
@@ -75,8 +74,12 @@
             android:id="@+id/addContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="32dp">
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp">
 
             <CheckBox
                 android:id="@+id/newTaskMark"
@@ -97,19 +100,22 @@
             <Button
                 android:id="@+id/newTaskButton"
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="3dp"
+                android:layout_height="32dp"
                 android:layout_weight="0"
                 android:background="@color/transparent"
                 android:fontFamily="sans-serif"
                 android:text="New Task"
                 android:textAlignment="viewStart"
                 android:textAllCaps="false"
-                android:textColor="#aaa"
+                android:textColor="@color/darkLight"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
 
     </LinearLayout>
 
