@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tasksRecyclerView: RecyclerView
     private lateinit var counterText: TextView
     private lateinit var newTaskButton: Button
-    private lateinit var clearButton: ImageButton
+//    private lateinit var clearButton: ImageButton
 
     private var tasks: ArrayList<Task> = arrayListOf()
     private var tasksFilename = "tasks.file"
@@ -102,8 +102,8 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         // Clear functionality
-        clearButton = findViewById(R.id.clearButton)
-        clearButton.setOnClickListener {
+//        clearButton = findViewById(R.id.clearButton)
+        counterText.setOnClickListener {
             tasks.clear()
             hideKeyboard()
             updateView()

@@ -5,7 +5,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="top"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="16dp"
     android:paddingTop="8dp"
@@ -14,13 +14,16 @@
 
     <CheckBox
         android:id="@+id/markButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="0dp"
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
         android:layout_weight="0"
+        android:button="@drawable/checkdot"
         android:checked="false"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:scaleX=".7"
+        android:scaleY=".7" />
 
     <Space
         android:layout_width="16dp"
@@ -47,12 +50,11 @@
 
     <ImageButton
         android:id="@+id/deleteButton"
-        android:layout_width="32dp"
+        android:layout_width="24dp"
         android:layout_height="32dp"
         android:layout_weight="0"
         android:background="@color/transparent"
-        android:rotation="45"
         android:tint="@color/darkLight"
-        app:srcCompat="@drawable/ic_add_circle_black_24dp" />
+        app:srcCompat="@drawable/ic_remove_circle_black_24dp" />
 
 </LinearLayout>
