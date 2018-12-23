@@ -51,6 +51,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Check file is initialized
+        if (!checkPref("initialized")) {
+            writeTasks()
+            writePref("initialized", true)
+        }
+
         // Load tasks from File
         readTasks()
 
@@ -153,5 +159,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() { super.onBackPressed(); rootView.requestFocus() }
+
+    fun checkPref(label: String): Boolean {
+        val sharedPref = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(label, false)
+    }
+
+    fun writePref(label: String, bool: Boolean) {
+        val sharedPref = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean(label, bool)
+        editor.apply()
+    }
+
 
 }
