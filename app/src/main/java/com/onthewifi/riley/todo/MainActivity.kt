@@ -1,45 +1,28 @@
 package com.onthewifi.riley.todo
 
+import android.animation.AnimatorInflater
+import android.app.*
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.support.v4.app.NotificationCompat
+import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import java.io.File
+import android.widget.LinearLayout
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-import android.R.animator
-import android.animation.Animator
-import android.animation.AnimatorInflater
-import android.animation.ObjectAnimator
-import android.app.*
-import android.content.ComponentName
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.drawable.AnimationDrawable
-import android.graphics.drawable.Drawable
-import android.os.Build
-import android.os.Handler
-import android.os.IBinder
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.helper.ItemTouchHelper
-import android.util.Log
-import android.view.MotionEvent
-import android.view.View.OnTouchListener
-import android.view.Gravity
-import android.widget.PopupWindow
-import android.widget.LinearLayout
-import android.view.LayoutInflater
-import android.view.View
-import android.view.animation.AnimationUtils
-import kotlinx.android.synthetic.main.task_view.*
 import java.util.*
 import kotlin.random.Random
 
@@ -80,16 +63,6 @@ class MainActivity : AppCompatActivity() {
         tasksRecyclerView.layoutManager = LinearLayoutManager(this as Context)
         tasksRecyclerView.adapter = RecyclerAdapter(this as Context, tasks)
 
-//        // Swipe to delete
-//        val swipeHandler = object : SwipeToDeleteCallback(applicationContext) {
-//            override fun onSwiped(view: RecyclerView.ViewHolder, pos: Int) {
-//                (tasksRecyclerView.adapter as RecyclerAdapter).removeAt(view.layoutPosition)
-//                updateView()
-//            }
-//        }
-//        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-//        itemTouchHelper.attachToRecyclerView(tasksRecyclerView)
-
         // Enable counter
         counterText = findViewById(R.id.counterText)
         counterText.text = tasks.count().toString()
@@ -127,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         createNotificationChannel()
-        notifInit()
+        notifyInit()
 
     }
 
@@ -171,7 +144,7 @@ class MainActivity : AppCompatActivity() {
 
     // NOTIFICATION
 
-    fun notifInit() {
+    private fun notifyInit() {
         createNotificationChannel()
         setReminder(8, 0)
         setReminder(22, 0)

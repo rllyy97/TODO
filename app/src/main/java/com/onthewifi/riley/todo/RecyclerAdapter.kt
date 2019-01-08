@@ -1,20 +1,15 @@
 package com.onthewifi.riley.todo
 
 import android.content.Context
-import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.text.Editable
-import android.text.TextWatcher
-import android.text.method.TextKeyListener.clear
-import android.view.KeyEvent
-import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.widget.ImageButton
 import kotlinx.android.synthetic.main.activity_main.*
 
 class RecyclerAdapter(private val context: Context, private val tasks: ArrayList<Task>) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
@@ -48,7 +43,7 @@ class RecyclerAdapter(private val context: Context, private val tasks: ArrayList
         view.deleteButton.setOnClickListener { removeAt(pos) }
     }
 
-    fun removeAt(position: Int) {
+    private fun removeAt(position: Int) {
         tasks.removeAt(position)
         mainActivity.counterText.text = tasks.count().toString()
         if (tasks.count() == 0) mainActivity.thumbPopup()
