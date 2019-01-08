@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var newTaskButton: Button
 //    private lateinit var clearButton: ImageButton
 
-    private var tasks: ArrayList<Task> = arrayListOf()
+    var tasks: ArrayList<Task> = arrayListOf()
     private var tasksFilename = "tasks.file"
 
     private var CHANNEL_ID = "todo"
@@ -173,8 +173,8 @@ class MainActivity : AppCompatActivity() {
 
     fun notifInit() {
         createNotificationChannel()
-        val cal= Calendar.getInstance()
-        setReminder(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE) + 1)
+        setReminder(8, 0)
+        setReminder(22, 0)
     }
 
     fun createNotification(title: String, text: String): Int {
@@ -210,10 +210,9 @@ class MainActivity : AppCompatActivity() {
     private fun setReminder(hour: Int, min: Int) {
         val cal = Calendar.getInstance()
         val setCal = Calendar.getInstance()
-        setCal.set(Calendar.HOUR_OF_DAY, 8)
+        setCal.set(Calendar.HOUR_OF_DAY, hour)
         setCal.set(Calendar.MINUTE, min)
         setCal.set(Calendar.SECOND, 0)
-        //cancelReminder(context, this)
 
         if (setCal.before(cal)) setCal.add(Calendar.DATE,1)
 
