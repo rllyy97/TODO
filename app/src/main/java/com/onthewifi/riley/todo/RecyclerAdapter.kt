@@ -50,7 +50,9 @@ class RecyclerAdapter(private val context: Context, private val tasks: ArrayList
 
     fun removeAt(position: Int) {
         tasks.removeAt(position)
-        mainActivity.updateView()
+        mainActivity.counterText.text = tasks.count().toString()
+        if (tasks.count() == 0) mainActivity.thumbPopup()
+        notifyDataSetChanged()
         mainActivity.writeTasks()
     }
 
