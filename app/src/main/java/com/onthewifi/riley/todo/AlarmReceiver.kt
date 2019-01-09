@@ -6,29 +6,35 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import java.io.ObjectInputStream
 import java.util.*
 
 class AlarmReceiver : BroadcastReceiver() {
+    private var tasksFilename = "tasks.file"
     private var CHANNEL_ID = "todo"
     private val NOTIFICATION_ID = 7
     override fun onReceive(context: Context, intent: Intent) {
 
         // Handles device restart
         if (intent.action != null)
-            if (intent.action == Intent.ACTION_BOOT_COMPLETED)
-                (context as MainActivity).notifyInit()
+            if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
+                MainActivity().notifyInit()
+                return
+            }
 
         val title: String
         val message: String
         val cal = Calendar.getInstance()
+
         if (cal.get(Calendar.HOUR_OF_DAY) <= 12) {
             title = "Good Morning!"
             message = "It's time to make your daily TODO"
         } else {
-            val main = context as MainActivity
-            main.readTasks()
-            val remaining = main.tasks.size
-            if (main.tasks.isEmpty()) return
+            val objectInputStream = ObjectInputStream(context.applicationContext.openFileInput(tasksFilename))
+            val tasks = objectInputStream.readObject() as ArrayList<*>
+            objectInputStream.close()
+            val remaining = tasks.size
+            if (tasks.isEmpty()) return
             title = "You have $remaining tasks remaining!"
             message = "Don't forget to finish them up"
         }

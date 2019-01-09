@@ -219,13 +219,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showTimePickerDialog(code: Int) {
-        val cal = Calendar.getInstance()
-        val hour = cal.get(Calendar.HOUR_OF_DAY)
-        val min = cal.get(Calendar.MINUTE)
+        val hour = getPrefInt(code.toString()+"hour")
+        val min = getPrefInt(code.toString()+"min")
         val timePickerDialog = TimePickerDialog(this,
                 TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                    writePrefInt(code.toString()+"hour", hour)
-                    writePrefInt(code.toString()+"min", min)
+                    writePrefInt(code.toString()+"hour", hourOfDay)
+                    writePrefInt(code.toString()+"min", minute)
                     setReminder(code, hourOfDay, minute)
                 }, hour, min, false)
         timePickerDialog.setTitle("Select Time")
