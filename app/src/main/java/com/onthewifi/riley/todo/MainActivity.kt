@@ -30,16 +30,17 @@ import kotlin.random.Random
 class MainActivity : AppCompatActivity() {
 
     private lateinit var rootView: NestedScrollView
+    private lateinit var logo: ImageView
     private lateinit var tasksRecyclerView: RecyclerView
     private lateinit var counterText: TextView
     private lateinit var newTaskButton: Button
-//    private lateinit var clearButton: ImageButton
 
     var tasks: ArrayList<Task> = arrayListOf()
     private var tasksFilename = "tasks.file"
 
     private var CHANNEL_ID = "todo"
-    private var DAILY_REMINDER_REQUEST_CODE = 12
+    private var MORNING_REQUEST_CODE = 12
+    private var NIGHT_REQUEST_CODE = 13
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +48,13 @@ class MainActivity : AppCompatActivity() {
 
         // Check file is initialized
         if (!checkPref("initialized")) {
+            // Initialize file
             writeTasks()
+            // Initialize alarm prefs
+            writePrefInt(MORNING_REQUEST_CODE.toString()+"hour", 8)
+            writePrefInt(MORNING_REQUEST_CODE.toString()+"min", 0)
+            writePrefInt(NIGHT_REQUEST_CODE.toString()+"hour", 22)
+            writePrefInt(NIGHT_REQUEST_CODE.toString()+"min", 0)
             writePref("initialized", true)
         }
 
@@ -57,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         // Init Root
         rootView = findViewById(R.id.root)
         rootView.setOnClickListener { it.requestFocus() }
+        logo = findViewById(R.id.logo)
+        logo.setOnClickListener { showTimePickerDialog(MORNING_REQUEST_CODE) }
 
         // Set up recyclerView
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView)
@@ -85,14 +94,8 @@ class MainActivity : AppCompatActivity() {
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(newTaskText, InputMethodManager.SHOW_IMPLICIT)
             }
         }
-//        newTaskButton.alpha = 0.0F
-//        tasksRecyclerView.postOnAnimation {
-//            newTaskButton.alpha = 1.0F
-//            newTaskButton.startAnimation(AnimationUtils.loadAnimation(applicationContext, R.anim.item_animation_fall_down))
-//        }
 
         // Clear functionality
-//        clearButton = findViewById(R.id.clearButton)
         counterText.setOnClickListener {
             tasks.clear()
             hideKeyboard()
@@ -144,10 +147,12 @@ class MainActivity : AppCompatActivity() {
 
     // NOTIFICATION
 
-    private fun notifyInit() {
+    fun notifyInit() {
         createNotificationChannel()
-        setReminder(8, 0)
-        setReminder(22, 0)
+        // Morning Notification
+        setReminder(MORNING_REQUEST_CODE, getPrefInt(MORNING_REQUEST_CODE.toString()+"hour"), getPrefInt(MORNING_REQUEST_CODE.toString()+"min"))
+        // Night Notification
+        setReminder(NIGHT_REQUEST_CODE, getPrefInt(NIGHT_REQUEST_CODE.toString()+"hour"), getPrefInt(NIGHT_REQUEST_CODE.toString()+"min"))
     }
 
     fun createNotification(title: String, text: String): Int {
@@ -161,7 +166,6 @@ class MainActivity : AppCompatActivity() {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
         with(NotificationManagerCompat.from(this)) {
-            // notificationId is a unique int for each notification that you must define
             notify(notificationId, mBuilder.build())
         }
         return notificationId
@@ -180,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setReminder(hour: Int, min: Int) {
+    private fun setReminder(code: Int, hour: Int, min: Int) {
         val cal = Calendar.getInstance()
         val setCal = Calendar.getInstance()
         setCal.set(Calendar.HOUR_OF_DAY, hour)
@@ -192,14 +196,40 @@ class MainActivity : AppCompatActivity() {
         // Enable a receiver
         val receiver = ComponentName(this, AlarmReceiver::class.java)
         val pm = packageManager
-
         pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
 
         val intent1 = Intent(this, AlarmReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, DAILY_REMINDER_REQUEST_CODE, intent1, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getBroadcast(this, code, intent1, PendingIntent.FLAG_UPDATE_CURRENT)
         val am = getSystemService(ALARM_SERVICE) as AlarmManager
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, setCal.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
 
+    }
+
+    private fun cancelReminder(code: Int) {
+        // Disable receiver
+        val receiver = ComponentName(this, AlarmReceiver::class.java)
+        val pm = packageManager
+        pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
+
+        val intent1 = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, code, intent1, PendingIntent.FLAG_UPDATE_CURRENT)
+        val am = getSystemService(ALARM_SERVICE) as AlarmManager
+        am.cancel(pendingIntent)
+        pendingIntent.cancel()
+    }
+
+    private fun showTimePickerDialog(code: Int) {
+        val cal = Calendar.getInstance()
+        val hour = cal.get(Calendar.HOUR_OF_DAY)
+        val min = cal.get(Calendar.MINUTE)
+        val timePickerDialog = TimePickerDialog(this,
+                TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                    writePrefInt(code.toString()+"hour", hour)
+                    writePrefInt(code.toString()+"min", min)
+                    setReminder(code, hourOfDay, minute)
+                }, hour, min, false)
+        timePickerDialog.setTitle("Select Time")
+        timePickerDialog.show()
     }
 
     // UTILITY
@@ -224,6 +254,18 @@ class MainActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
         editor.putBoolean(label, bool)
+        editor.apply()
+    }
+
+    private fun getPrefInt(label: String): Int {
+        val sharedPref = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        return sharedPref.getInt(label, -1)
+    }
+
+    private fun writePrefInt(label: String, int: Int) {
+        val sharedPref = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putInt(label, int)
         editor.apply()
     }
 

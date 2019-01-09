@@ -13,6 +13,11 @@ class AlarmReceiver : BroadcastReceiver() {
     private val NOTIFICATION_ID = 7
     override fun onReceive(context: Context, intent: Intent) {
 
+        // Handles device restart
+        if (intent.action != null)
+            if (intent.action == Intent.ACTION_BOOT_COMPLETED)
+                (context as MainActivity).notifyInit()
+
         val title: String
         val message: String
         val cal = Calendar.getInstance()
