@@ -13,6 +13,8 @@ class AlarmReceiver : BroadcastReceiver() {
     private var tasksFilename = "tasks.file"
     private var CHANNEL_ID = "todo"
     private val NOTIFICATION_ID = 7
+    private var MORNING_REQUEST_CODE = 12
+    private var NIGHT_REQUEST_CODE = 13
     override fun onReceive(context: Context, intent: Intent) {
 
         // Handles device restart
@@ -22,14 +24,13 @@ class AlarmReceiver : BroadcastReceiver() {
                 return
             }
 
-        val title: String
-        val message: String
-        val cal = Calendar.getInstance()
+        var title = "Empty"
+        var message = "Empty"
 
-        if (cal.get(Calendar.HOUR_OF_DAY) <= 12) {
+        if (intent.extras!!["reminderCode"] == MORNING_REQUEST_CODE) {
             title = "Good Morning!"
             message = "It's time to make your daily TODO"
-        } else {
+        } else if (intent.extras!!["reminderCode"] == NIGHT_REQUEST_CODE) {
             val objectInputStream = ObjectInputStream(context.applicationContext.openFileInput(tasksFilename))
             val tasks = objectInputStream.readObject() as ArrayList<*>
             objectInputStream.close()

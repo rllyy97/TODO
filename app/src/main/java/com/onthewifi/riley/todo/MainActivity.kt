@@ -199,6 +199,7 @@ class MainActivity : AppCompatActivity() {
         pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
 
         val intent1 = Intent(this, AlarmReceiver::class.java)
+        intent1.putExtra("reminderCode", code)
         val pendingIntent = PendingIntent.getBroadcast(this, code, intent1, PendingIntent.FLAG_UPDATE_CURRENT)
         val am = getSystemService(ALARM_SERVICE) as AlarmManager
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, setCal.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
