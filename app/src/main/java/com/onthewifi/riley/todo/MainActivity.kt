@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
 
     fun thumbPopup() {
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val popupView = inflater.inflate(R.layout.all_done_popup, rootView)
+        val popupView = inflater.inflate(R.layout.all_done_popup, null)
 
         val width = LinearLayout.LayoutParams.WRAP_CONTENT
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
