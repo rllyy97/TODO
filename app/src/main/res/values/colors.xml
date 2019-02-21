@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--Main Colors-->
+    <!-- Main Colors -->
     <color name="primaryLight">#ffff72</color>
     <color name="primaryMain">#ffeb3b</color>
     <color name="primaryDark">#c8b900</color>
@@ -8,8 +8,15 @@
     <color name="darkMain">#263238</color>
     <color name="darkLight">#e0e0e0</color>
 
-    <!--Utility Colors-->
+    <!-- Utility Colors -->
     <color name="white">#fff</color>
     <color name="black">#000</color>
+    <color name="dim">#4000</color>
     <color name="transparent">#0fff</color>
+
+    <!-- Card colors -->
+    <color name="card_background">#ffffff</color>
+    <color name="card_shadow_1">#d4d4d4</color>
+    <color name="card_shadow_2">#dddddd</color>
+    <color name="card_detailing">#eee</color>
 </resources>

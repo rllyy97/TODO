@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         rootView = findViewById(R.id.root)
         rootView.setOnClickListener { it.requestFocus() }
         logo = findViewById(R.id.logo)
-        logo.setOnClickListener { showTimePickerDialog(MORNING_REQUEST_CODE) }
+        logo.setOnClickListener { settingsPopup() }
 
         // Set up recyclerView
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView)
@@ -139,10 +139,43 @@ class MainActivity : AppCompatActivity() {
         val height = LinearLayout.LayoutParams.WRAP_CONTENT
         val focusable = true // lets taps outside the popup also dismiss it
         val popupWindow = PopupWindow(popupView, width, height, focusable)
-        popupWindow.animationStyle = R.style.popup_window_animation
+        popupWindow.animationStyle = R.style.popup_window_animation_fade
         popupWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0)
         Handler().postDelayed({ popupWindow.dismiss() }, 1000)
 
+    }
+
+    fun settingsPopup() {
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val popupView = inflater.inflate(R.layout.settings_popup, null)
+
+        val width = LinearLayout.LayoutParams.MATCH_PARENT
+        val height = LinearLayout.LayoutParams.WRAP_CONTENT
+        val focusable = true // lets taps outside the popup also dismiss it
+        val popupWindow = PopupWindow(popupView, width, height, focusable)
+        popupWindow.animationStyle = R.style.popup_window_animation
+
+        // Initialize time picker button with current time set
+        val morningPicker = popupView.findViewById<Button>(R.id.morningPicker)
+        val mHour = getPrefInt(MORNING_REQUEST_CODE.toString()+"hour")
+        val mMin = getPrefInt(MORNING_REQUEST_CODE.toString()+"min")
+        morningPicker.text = mHour.toString() + mMin.toString()
+        morningPicker.setOnClickListener { showTimePickerDialog(MORNING_REQUEST_CODE) }
+
+        // Initialize switch with current active state
+        val morningSwitch = popupView.findViewById<Switch>(R.id.morningSwitch)
+
+        // Initialize time picker button with current time set
+        val nightPicker = popupView.findViewById<Button>(R.id.nightPicker)
+        val nHour = getPrefInt(NIGHT_REQUEST_CODE.toString()+"hour")
+        val nMin = getPrefInt(NIGHT_REQUEST_CODE.toString()+"min")
+        nightPicker.text = nHour.toString() + nMin.toString()
+        nightPicker.setOnClickListener { showTimePickerDialog(NIGHT_REQUEST_CODE) }
+
+        // Initialize switch with current active state
+        val nightSwitch = popupView.findViewById<Switch>(R.id.nightSwitch)
+
+        popupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0)
     }
 
     // NOTIFICATION

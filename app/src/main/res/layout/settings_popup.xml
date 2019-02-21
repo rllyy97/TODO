@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/darkLight"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@color/white">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textAlignment="viewStart"
+            android:textAllCaps="false"
+            android:textColor="@color/darkMain"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:padding="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Morning Alarm"
+                android:textSize="18sp"
+                android:textColor="@color/darkMain"
+                android:layout_weight="1"/>
+
+            <Switch
+                android:id="@+id/morningSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:layout_marginEnd="16dp"
+                android:checked="true"/>
+
+            <Button
+                android:id="@+id/morningPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8:00 AM"
+                android:textSize="16sp"
+                android:backgroundTint="@color/primaryMain"
+                android:layout_weight="0"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="Night Alarm"
+                android:textSize="18sp"
+                android:textColor="@color/darkMain"
+                android:layout_weight="1"/>
+
+            <Switch
+                android:id="@+id/nightSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:layout_marginEnd="16dp"
+                android:checked="true"/>
+
+            <Button
+                android:id="@+id/nightPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8:00 AM"
+                android:textSize="16sp"
+                android:backgroundTint="@color/primaryMain"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
