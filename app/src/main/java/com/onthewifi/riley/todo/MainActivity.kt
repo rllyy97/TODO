@@ -23,6 +23,7 @@ import android.widget.*
 import android.widget.LinearLayout
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random
 
@@ -56,6 +57,8 @@ class MainActivity : AppCompatActivity() {
             writePrefInt(NIGHT_REQUEST_CODE.toString()+"hour", 22)
             writePrefInt(NIGHT_REQUEST_CODE.toString()+"min", 0)
             writePref("initialized", true)
+            writePref(MORNING_REQUEST_CODE.toString(), false)
+            writePref(NIGHT_REQUEST_CODE.toString(), false)
         }
 
         // Load tasks from File
@@ -145,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun settingsPopup() {
+    private fun settingsPopup() {
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupView = inflater.inflate(R.layout.settings_popup, null)
 
@@ -159,21 +162,25 @@ class MainActivity : AppCompatActivity() {
         val morningPicker = popupView.findViewById<Button>(R.id.morningPicker)
         val mHour = getPrefInt(MORNING_REQUEST_CODE.toString()+"hour")
         val mMin = getPrefInt(MORNING_REQUEST_CODE.toString()+"min")
-        morningPicker.text = mHour.toString() + mMin.toString()
-        morningPicker.setOnClickListener { showTimePickerDialog(MORNING_REQUEST_CODE) }
+        morningPicker.text = formatTime(mHour, mMin)
+        morningPicker.setOnClickListener { showTimePickerDialog(MORNING_REQUEST_CODE); popupWindow.dismiss()  }
 
         // Initialize switch with current active state
         val morningSwitch = popupView.findViewById<Switch>(R.id.morningSwitch)
+        morningSwitch.isChecked = checkPref(MORNING_REQUEST_CODE.toString())
+        morningSwitch.setOnClickListener { reminderSwitch(MORNING_REQUEST_CODE)}
 
         // Initialize time picker button with current time set
         val nightPicker = popupView.findViewById<Button>(R.id.nightPicker)
         val nHour = getPrefInt(NIGHT_REQUEST_CODE.toString()+"hour")
         val nMin = getPrefInt(NIGHT_REQUEST_CODE.toString()+"min")
-        nightPicker.text = nHour.toString() + nMin.toString()
-        nightPicker.setOnClickListener { showTimePickerDialog(NIGHT_REQUEST_CODE) }
+        nightPicker.text = formatTime(nHour, nMin)
+        nightPicker.setOnClickListener { showTimePickerDialog(NIGHT_REQUEST_CODE); popupWindow.dismiss() }
 
         // Initialize switch with current active state
         val nightSwitch = popupView.findViewById<Switch>(R.id.nightSwitch)
+        nightSwitch.isChecked = checkPref(NIGHT_REQUEST_CODE.toString())
+        nightSwitch.setOnClickListener { reminderSwitch(NIGHT_REQUEST_CODE) }
 
         popupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0)
     }
@@ -183,9 +190,11 @@ class MainActivity : AppCompatActivity() {
     fun notifyInit() {
         createNotificationChannel()
         // Morning Notification
-        setReminder(MORNING_REQUEST_CODE, getPrefInt(MORNING_REQUEST_CODE.toString()+"hour"), getPrefInt(MORNING_REQUEST_CODE.toString()+"min"))
+        if(checkPref(MORNING_REQUEST_CODE.toString()))
+            setReminder(MORNING_REQUEST_CODE, getPrefInt(MORNING_REQUEST_CODE.toString()+"hour"), getPrefInt(MORNING_REQUEST_CODE.toString()+"min"))
         // Night Notification
-        setReminder(NIGHT_REQUEST_CODE, getPrefInt(NIGHT_REQUEST_CODE.toString()+"hour"), getPrefInt(NIGHT_REQUEST_CODE.toString()+"min"))
+        if(checkPref(NIGHT_REQUEST_CODE.toString()))
+            setReminder(NIGHT_REQUEST_CODE, getPrefInt(NIGHT_REQUEST_CODE.toString()+"hour"), getPrefInt(NIGHT_REQUEST_CODE.toString()+"min"))
     }
 
     fun createNotification(title: String, text: String): Int {
@@ -252,6 +261,16 @@ class MainActivity : AppCompatActivity() {
         pendingIntent.cancel()
     }
 
+    private fun reminderSwitch(code: Int) {
+        if (checkPref(code.toString())) {
+            cancelReminder(code)
+            writePref(code.toString(), false)
+        } else {
+            setReminder(code, getPrefInt(code.toString()+"hour"), getPrefInt(code.toString()+"min"))
+            writePref(code.toString(), true)
+        }
+    }
+
     private fun showTimePickerDialog(code: Int) {
         val hour = getPrefInt(code.toString()+"hour")
         val min = getPrefInt(code.toString()+"min")
@@ -260,9 +279,18 @@ class MainActivity : AppCompatActivity() {
                     writePrefInt(code.toString()+"hour", hourOfDay)
                     writePrefInt(code.toString()+"min", minute)
                     setReminder(code, hourOfDay, minute)
+                    settingsPopup()
                 }, hour, min, false)
         timePickerDialog.setTitle("Select Time")
+        timePickerDialog.setOnDismissListener { settingsPopup() }
         timePickerDialog.show()
+    }
+
+    private fun formatTime(hour: Int, min: Int): String {
+        val inputString = "$hour:$min"
+        val inputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        return outputFormat.format(inputFormat.parse(inputString))
     }
 
     // UTILITY
