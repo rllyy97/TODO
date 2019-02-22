@@ -279,7 +279,6 @@ class MainActivity : AppCompatActivity() {
                     writePrefInt(code.toString()+"hour", hourOfDay)
                     writePrefInt(code.toString()+"min", minute)
                     setReminder(code, hourOfDay, minute)
-                    settingsPopup()
                 }, hour, min, false)
         timePickerDialog.setTitle("Select Time")
         timePickerDialog.setOnDismissListener { settingsPopup() }
